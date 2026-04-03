@@ -5,8 +5,12 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file contains the routes for your application.
 """
 
-from app import app
-from flask import render_template, request, redirect, url_for
+import os
+from app import app, db
+from flask import render_template, request, redirect, url_for, flash
+from app.forms import PropertyForm
+from app.models import Property
+from werkzeug.utils import secure_filename
 
 
 ###
@@ -23,6 +27,53 @@ def home():
 def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
+
+@app.route('/properties/create', methods=['GET', 'POST'])
+def create_property():
+    form = PropertyForm()
+
+    if form.validate_on_submit():
+        photo = form.photo.data
+        filename = secure_filename(photo.filename)
+
+        upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+
+        photo.save(os.path.join(upload_folder, filename))
+
+        new_property = Property(
+            title=form.title.data,
+            description=form.description.data,
+            bedrooms=form.bedrooms.data,
+            bathrooms=form.bathrooms.data,
+            price=form.price.data,
+            property_type=form.property_type.data,
+            location=form.location.data,
+            photo=filename
+        )
+
+        db.session.add(new_property)
+        db.session.commit()
+
+        flash('Property successfully added.', 'success')
+        return redirect(url_for('list_properties'))
+
+    if request.method == 'POST':
+        flash_errors(form)
+
+    return render_template('create_property.html', form=form)
+
+
+@app.route('/properties')
+def list_properties():
+    properties = Property.query.all()
+    return render_template('properties.html', properties=properties)
+
+
+@app.route('/properties/<int:propertyid>')
+def property_detail(propertyid):
+    property = Property.query.get_or_404(propertyid)
+    return render_template('property_detail.html', property=property)
 
 
 ###
