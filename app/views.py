@@ -9,7 +9,7 @@ import os
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
 from app.forms import PropertyForm
-from app.models import Property
+from app.models import Property, PropertyImage
 from werkzeug.utils import secure_filename
 
 
@@ -39,7 +39,9 @@ def create_property():
         upload_folder = os.path.join(app.root_path, 'static', 'uploads')
         os.makedirs(upload_folder, exist_ok=True)
 
-        photo.save(os.path.join(upload_folder, filename))
+        main_photo = form.photo.data
+        main_filename = secure_filename(main_photo.filename)
+        main_photo.save(os.path.join(upload_folder, main_filename))
 
         new_property = Property(
             title=form.title.data,
@@ -47,12 +49,28 @@ def create_property():
             bedrooms=form.bedrooms.data,
             bathrooms=form.bathrooms.data,
             price=form.price.data,
+            currency=form.currency.data,
             property_type=form.property_type.data,
             location=form.location.data,
-            photo=filename
+            photo=main_filename
         )
 
         db.session.add(new_property)
+        db.session.commit()
+
+        additional_images = form.images.data
+
+        for image in additional_images:
+            if image and image.filename:
+                filename = secure_filename(image.filename)
+                image.save(os.path.join(upload_folder, filename))
+
+                property_image = PropertyImage(
+                    filename=filename,
+                    property_id=new_property.id
+                )
+                db.session.add(property_image)
+
         db.session.commit()
 
         flash('Property successfully added.', 'success')
