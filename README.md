@@ -1,6 +1,6 @@
 # 📌 INFO3180 Project 1 – Property Listing Web Application
 
-## 📖 Description
+## Description
 
 This project is a Flask-based web application that allows users to create, store, and view property listings for rent or sale. The application uses a PostgreSQL database to store property information and supports image uploads for each listing.
 
@@ -14,7 +14,7 @@ Users can:
 
 ---
 
-## ⚙️ Technologies Used
+## Technologies Used
 
 - Python (Flask)  
 - Flask-WTF (form handling and validation)  
@@ -25,7 +25,7 @@ Users can:
 
 ---
 
-## 🚀 Features
+## Features
 
 - Create property listings with title, description, price, location, bedrooms, bathrooms, and type  
 - Currency selection (JMD, USD, CAD)  
@@ -40,7 +40,7 @@ Users can:
 
 ---
 
-## 🧭 Routes
+## Routes
 
 - `/properties/create` → Add a new property  
 - `/properties` → View all properties  
@@ -48,7 +48,7 @@ Users can:
 
 ---
 
-## 🗄️ Database
+## Database
 
 The application uses a PostgreSQL database with a `Property` model and a related model for storing multiple property images.
 
@@ -56,7 +56,7 @@ Migration files are included so the database schema can be recreated.
 
 ---
 
-## ▶️ How to Run
+## How to Run
 
 1. Clone the repository
 
