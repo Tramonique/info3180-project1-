@@ -37,7 +37,7 @@
         <p><strong>{{ property.bathrooms }}</strong> Bathrooms</p>
         <p><strong>Location:</strong> {{ property.location }}</p>
         <p><strong>Type:</strong> {{ property.property_type }}</p>
-        <p class="fw-bold text-primary fs-4">{{ property.currency }} ${{ property.price }}</p>
+        <p class="fw-bold text-primary fs-4">{{ property.currency }} ${{ "{:,.2f}".format(property.price) }}</p>
         <button class="btn btn-success">Email Realtor</button>
       </div>
     </div>
